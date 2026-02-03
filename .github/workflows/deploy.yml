@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   deploy:
@@ -26,17 +27,7 @@ jobs:
             --exclude ".git/*" \
             --exclude "README.md" \
             --exclude ".gitignore" \
-            --exclude "infrastructure/*" \
-            --cache-control "max-age=31536000" \
-            --content-type "text/html" --exclude "*" --include "*.html"
-          
-          aws s3 sync . s3://be-my-valentine-project --delete \
-            --exclude ".github/*" \
-            --exclude ".git/*" \
-            --exclude "README.md" \
-            --exclude ".gitignore" \
-            --exclude "infrastructure/*" \
-            --exclude "*.html"
+            --exclude "infrastructure/*"
 
       - name: Invalidate CloudFront Cache
         run: |
