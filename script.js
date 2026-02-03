@@ -118,7 +118,7 @@ function showHeartPopup() {
 function handleNoClick() {
     noClickCount++;
     
-    // Show message in bubble
+    // Show message in bubble - cycle through messages infinitely
     const messageIndex = (noClickCount - 1) % noMessages.length;
     const message = noMessages[messageIndex];
     
@@ -131,9 +131,9 @@ function handleNoClick() {
     // Make No button jump to random position!
     jumpNoButton();
     
-    // Grow the Yes button!
-    yesButtonScale += 0.08;
-    yesBtn.style.transform = `scale(${Math.min(yesButtonScale, 1.8)})`;
+    // Grow the Yes button (cap at 1.8x)
+    yesButtonScale = Math.min(yesButtonScale + 0.05, 1.8);
+    yesBtn.style.transform = `scale(${yesButtonScale})`;
     
     // After many clicks, make Yes button irresistible
     if (noClickCount >= 5) {
@@ -141,63 +141,38 @@ function handleNoClick() {
         yesBtn.classList.add('mega-pulse');
     }
     
-    // Eventually make No button tiny and desperate
-    if (noClickCount >= 15) {
-        noBtn.style.fontSize = '0.8rem';
-        noBtn.style.padding = '0.5rem 1rem';
-        noBtn.style.minWidth = '80px';
-    }
-    
-    // After lots of clicks, hide No button
-    if (noClickCount >= noMessages.length) {
-        noBtn.style.visibility = 'hidden';
-        subtitle.textContent = "There's only one option now! 😉💕";
-    }
+    // No button stays visible forever - just keeps jumping!
 }
 
 function jumpNoButton() {
-    // Get the card boundaries
-    const card = questionCard;
-    const cardRect = card.getBoundingClientRect();
-    const btnRect = noBtn.getBoundingClientRect();
+    // Button dimensions (estimate if not yet positioned)
+    const btnWidth = 120;
+    const btnHeight = 50;
     
-    // Calculate random position within the viewport (but keeping button visible)
-    const maxX = window.innerWidth - btnRect.width - 20;
-    const maxY = window.innerHeight - btnRect.height - 20;
+    // Safe padding from edges
+    const padding = 30;
     
-    // Choose random position
-    let randomX = Math.random() * maxX;
-    let randomY = Math.random() * maxY;
+    // Calculate safe bounds within viewport
+    const minX = padding;
+    const maxX = window.innerWidth - btnWidth - padding;
+    const minY = padding;
+    const maxY = window.innerHeight - btnHeight - padding;
     
-    // Make sure it doesn't overlap with the card too much
-    const cardCenterX = cardRect.left + cardRect.width / 2;
-    const cardCenterY = cardRect.top + cardRect.height / 2;
+    // Generate random position within safe bounds
+    let randomX = minX + Math.random() * (maxX - minX);
+    let randomY = minY + Math.random() * (maxY - minY);
     
-    // If too close to card center, push it away
-    const distanceFromCard = Math.sqrt(
-        Math.pow(randomX - cardCenterX, 2) + 
-        Math.pow(randomY - cardCenterY, 2)
-    );
-    
-    if (distanceFromCard < 200) {
-        // Push it to a corner
-        const corners = [
-            { x: 20, y: 20 },
-            { x: maxX, y: 20 },
-            { x: 20, y: maxY },
-            { x: maxX, y: maxY }
-        ];
-        const randomCorner = corners[Math.floor(Math.random() * corners.length)];
-        randomX = randomCorner.x;
-        randomY = randomCorner.y;
-    }
+    // Make sure values are positive and valid
+    randomX = Math.max(padding, Math.min(randomX, window.innerWidth - btnWidth - padding));
+    randomY = Math.max(padding, Math.min(randomY, window.innerHeight - btnHeight - padding));
     
     // Apply the jump with fixed positioning
     noBtn.style.position = 'fixed';
     noBtn.style.left = randomX + 'px';
     noBtn.style.top = randomY + 'px';
     noBtn.style.zIndex = '1000';
-    noBtn.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    noBtn.style.transition = 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    noBtn.style.transform = 'scale(1)';
     
     // Add a little shake animation
     noBtn.classList.add('jumped');
