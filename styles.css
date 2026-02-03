@@ -228,9 +228,35 @@ body {
     font-size: 1.1rem;
     color: var(--purple-deep);
     margin-bottom: 2rem;
-    font-weight: 500;
+    font-weight: 600;
     min-height: 1.5em;
     transition: all 0.3s ease;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+/* Message Bubble Style */
+.subtitle.message-bubble {
+    background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+    box-shadow: 0 4px 20px rgba(236, 72, 153, 0.25);
+    border: 2px solid rgba(236, 72, 153, 0.3);
+    animation: bubblePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: var(--pink-hot);
+}
+
+@keyframes bubblePop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* ============================================
@@ -508,3 +534,94 @@ body {
     outline: 3px solid var(--purple-medium);
     outline-offset: 3px;
 }
+
+/* ============================================
+   Heart Popup Celebration
+   ============================================ */
+.heart-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 182, 193, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: overlayFadeIn 0.5s ease;
+}
+
+.heart-popup-overlay.fade-out {
+    animation: overlayFadeOut 0.5s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes overlayFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.heart-popup {
+    text-align: center;
+    animation: heartPopupEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartPopupEntrance {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+.big-heart {
+    font-size: 10rem;
+    animation: heartBeat 0.8s ease infinite;
+    filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.6));
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.15); }
+}
+
+.popup-message {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: var(--pink-hot);
+    margin-top: 1rem;
+    text-shadow: 2px 2px 10px rgba(236, 72, 153, 0.3);
+    animation: textFloat 2s ease-in-out infinite;
+}
+
+.popup-submessage {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    color: var(--purple-deep);
+    font-weight: 600;
+    margin-top: 0.5rem;
+    animation: textFloat 2s ease-in-out infinite 0.2s;
+}
+
+@keyframes textFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Burst heart effect */
+.burst-heart {
+    filter: drop-shadow(0 0 15px rgba(236, 72, 153, 0.8));
+}
+

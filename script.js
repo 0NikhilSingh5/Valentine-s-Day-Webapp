@@ -10,19 +10,30 @@ const noBtn = document.getElementById('noBtn');
 const subtitle = document.getElementById('subtitle');
 const heartsContainer = document.getElementById('heartsContainer');
 const confettiContainer = document.getElementById('confettiContainer');
+const buttonsContainer = document.getElementById('buttonsContainer');
 
-// No Button Messages - Escalating pleas!
+// No Button Messages - More messages with escalating pleas!
 const noMessages = [
-    { text: "Are you sure? 🥺", size: 1 },
-    { text: "Please think about it! 😢", size: 0.95 },
-    { text: "Don't break my heart! 💔", size: 0.9 },
-    { text: "I'll be so sad... 😭", size: 0.85 },
-    { text: "Pretty please? 🙏", size: 0.8 },
-    { text: "One more chance? 🥹", size: 0.75 },
-    { text: "I promise to make you happy! 💕", size: 0.7 },
-    { text: "Please say yes... 😿", size: 0.65 },
-    { text: "*cries in corner* 😢💔", size: 0.6 },
-    { text: "My heart can't take this! 💔😭", size: 0.55 }
+    "Are you sure? 🥺",
+    "Please think about it! 😢",
+    "Don't break my heart! 💔",
+    "I'll be so sad... 😭",
+    "Pretty please? 🙏",
+    "One more chance? 🥹",
+    "I promise to make you happy! 💕",
+    "Please say yes... 😿",
+    "*cries in corner* 😢💔",
+    "My heart can't take this! 💔😭",
+    "You're really testing me! 😩",
+    "I'll give you chocolates! 🍫",
+    "And flowers too! 💐",
+    "I'll cook for you! 👨‍🍳",
+    "Okay now you're being mean! 😤",
+    "Fine, I'll just cry here... 😭",
+    "Still no?! 🤯",
+    "What if I say please x100? 🥺🙏",
+    "I'll never give up! 💪❤️",
+    "Last chance... just kidding! 😏"
 ];
 
 let noClickCount = 0;
@@ -72,59 +83,134 @@ function handleYesClick() {
         questionCard.classList.add('hidden');
         successCard.classList.remove('hidden');
         
+        // Show the big heart popup
+        showHeartPopup();
+        
         // Celebration effects!
         launchConfetti();
         createHeartBurst();
     }, 500);
 }
 
+function showHeartPopup() {
+    // Create heart popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'heart-popup-overlay';
+    
+    const popup = document.createElement('div');
+    popup.className = 'heart-popup';
+    popup.innerHTML = `
+        <div class="big-heart">💖</div>
+        <div class="popup-message">You made me the happiest!</div>
+        <div class="popup-submessage">I love you forever! 💕</div>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Auto-remove after animation
+    setTimeout(() => {
+        overlay.classList.add('fade-out');
+        setTimeout(() => overlay.remove(), 500);
+    }, 3000);
+}
+
 function handleNoClick() {
     noClickCount++;
     
-    if (noClickCount <= noMessages.length) {
-        const message = noMessages[noClickCount - 1];
-        
-        // Update subtitle with pleading message
-        subtitle.textContent = message.text;
-        subtitle.style.animation = 'none';
-        subtitle.offsetHeight; // Trigger reflow
-        subtitle.style.animation = 'shake 0.5s ease';
-        
-        // Shrink the No button
-        noBtn.style.transform = `scale(${message.size})`;
-        noBtn.style.opacity = message.size;
-        
-        // Grow the Yes button!
-        yesButtonScale += 0.1;
-        yesBtn.style.transform = `scale(${yesButtonScale})`;
-        
-        // Make No button run away occasionally
-        if (noClickCount % 3 === 0) {
-            noBtn.classList.add('running-away');
-            setTimeout(() => noBtn.classList.remove('running-away'), 400);
-        }
-        
-        // After many clicks, make Yes button irresistible
-        if (noClickCount >= 5) {
-            yesBtn.style.boxShadow = '0 0 30px rgba(236, 72, 153, 0.8)';
-            yesBtn.classList.add('mega-pulse');
-        }
-        
-        // Eventually "disable" the No button
-        if (noClickCount >= noMessages.length) {
-            noBtn.style.visibility = 'hidden';
-            subtitle.textContent = "There's only one option now! 😉💕";
-        }
+    // Show message in bubble
+    const messageIndex = (noClickCount - 1) % noMessages.length;
+    const message = noMessages[messageIndex];
+    
+    // Update subtitle with bubble animation
+    subtitle.textContent = message;
+    subtitle.classList.remove('message-bubble');
+    subtitle.offsetHeight; // Trigger reflow
+    subtitle.classList.add('message-bubble');
+    
+    // Make No button jump to random position!
+    jumpNoButton();
+    
+    // Grow the Yes button!
+    yesButtonScale += 0.08;
+    yesBtn.style.transform = `scale(${Math.min(yesButtonScale, 1.8)})`;
+    
+    // After many clicks, make Yes button irresistible
+    if (noClickCount >= 5) {
+        yesBtn.style.boxShadow = '0 0 30px rgba(236, 72, 153, 0.8)';
+        yesBtn.classList.add('mega-pulse');
     }
+    
+    // Eventually make No button tiny and desperate
+    if (noClickCount >= 15) {
+        noBtn.style.fontSize = '0.8rem';
+        noBtn.style.padding = '0.5rem 1rem';
+        noBtn.style.minWidth = '80px';
+    }
+    
+    // After lots of clicks, hide No button
+    if (noClickCount >= noMessages.length) {
+        noBtn.style.visibility = 'hidden';
+        subtitle.textContent = "There's only one option now! 😉💕";
+    }
+}
+
+function jumpNoButton() {
+    // Get the card boundaries
+    const card = questionCard;
+    const cardRect = card.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+    
+    // Calculate random position within the viewport (but keeping button visible)
+    const maxX = window.innerWidth - btnRect.width - 20;
+    const maxY = window.innerHeight - btnRect.height - 20;
+    
+    // Choose random position
+    let randomX = Math.random() * maxX;
+    let randomY = Math.random() * maxY;
+    
+    // Make sure it doesn't overlap with the card too much
+    const cardCenterX = cardRect.left + cardRect.width / 2;
+    const cardCenterY = cardRect.top + cardRect.height / 2;
+    
+    // If too close to card center, push it away
+    const distanceFromCard = Math.sqrt(
+        Math.pow(randomX - cardCenterX, 2) + 
+        Math.pow(randomY - cardCenterY, 2)
+    );
+    
+    if (distanceFromCard < 200) {
+        // Push it to a corner
+        const corners = [
+            { x: 20, y: 20 },
+            { x: maxX, y: 20 },
+            { x: 20, y: maxY },
+            { x: maxX, y: maxY }
+        ];
+        const randomCorner = corners[Math.floor(Math.random() * corners.length)];
+        randomX = randomCorner.x;
+        randomY = randomCorner.y;
+    }
+    
+    // Apply the jump with fixed positioning
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = randomX + 'px';
+    noBtn.style.top = randomY + 'px';
+    noBtn.style.zIndex = '1000';
+    noBtn.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
+    // Add a little shake animation
+    noBtn.classList.add('jumped');
+    setTimeout(() => noBtn.classList.remove('jumped'), 300);
 }
 
 // ============================================
 // Celebration Effects
 // ============================================
 function launchConfetti() {
-    const confettiItems = ['💖', '💕', '💗', '🎉', '✨', '🌟', '💝', '🩷', '❤️', '💓'];
+    const confettiItems = ['💖', '💕', '💗', '🎉', '✨', '🌟', '💝', '🩷', '❤️', '💓', '🎊', '🥳'];
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
@@ -136,24 +222,24 @@ function launchConfetti() {
             confettiContainer.appendChild(confetti);
             
             setTimeout(() => confetti.remove(), 4000);
-        }, i * 100);
+        }, i * 80);
     }
 }
 
 function createHeartBurst() {
-    const burstCount = 20;
+    const burstCount = 30;
     
     for (let i = 0; i < burstCount; i++) {
         setTimeout(() => {
             const heart = document.createElement('div');
-            heart.className = 'floating-heart';
+            heart.className = 'floating-heart burst-heart';
             heart.textContent = '💖';
             heart.style.left = '50%';
             heart.style.top = '50%';
-            heart.style.fontSize = '2rem';
+            heart.style.fontSize = '2.5rem';
             
             const angle = (i / burstCount) * Math.PI * 2;
-            const distance = 200;
+            const distance = 150 + Math.random() * 100;
             const targetX = Math.cos(angle) * distance;
             const targetY = Math.sin(angle) * distance;
             
@@ -169,7 +255,7 @@ function createHeartBurst() {
             });
             
             setTimeout(() => heart.remove(), 1500);
-        }, i * 50);
+        }, i * 40);
     }
 }
 
@@ -201,6 +287,16 @@ dynamicStyles.textContent = `
         0%, 100% { transform: scale(${yesButtonScale}); }
         50% { transform: scale(${yesButtonScale * 1.1}); }
     }
+    
+    .jumped {
+        animation: jumpShake 0.3s ease !important;
+    }
+    
+    @keyframes jumpShake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-10deg); }
+        75% { transform: rotate(10deg); }
+    }
 `;
 document.head.appendChild(dynamicStyles);
 
@@ -224,10 +320,18 @@ document.addEventListener('DOMContentLoaded', () => {
         yesBtn.style.filter = 'brightness(1)';
     });
     
+    // Make No button run away on hover too!
+    noBtn.addEventListener('mouseenter', () => {
+        if (noClickCount >= 3) {
+            jumpNoButton();
+        }
+    });
+    
     // Prevent right-click on No button (playful)
     noBtn.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         subtitle.textContent = "Nice try! Just click Yes already! 😏💕";
+        subtitle.classList.add('message-bubble');
     });
 });
 
@@ -241,6 +345,7 @@ document.addEventListener('keydown', (e) => {
     
     if (konamiCode.join(',') === konamiSequence.join(',')) {
         subtitle.textContent = "🎮 You found the secret! But still... be my Valentine? 💕";
+        subtitle.classList.add('message-bubble');
         launchConfetti();
     }
 });
