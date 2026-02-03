@@ -10,30 +10,29 @@ const noBtn = document.getElementById('noBtn');
 const subtitle = document.getElementById('subtitle');
 const heartsContainer = document.getElementById('heartsContainer');
 const confettiContainer = document.getElementById('confettiContainer');
-const buttonsContainer = document.getElementById('buttonsContainer');
 
-// No Button Messages - More messages with escalating pleas!
-const noMessages = [
+// Flirty messages that appear ON the No button
+const noButtonMessages = [
+    "No 😅",
     "Are you sure? 🥺",
-    "Please think about it! 😢",
-    "Don't break my heart! 💔",
-    "I'll be so sad... 😭",
-    "Pretty please? 🙏",
-    "One more chance? 🥹",
-    "I promise to make you happy! 💕",
-    "Please say yes... 😿",
-    "*cries in corner* 😢💔",
-    "My heart can't take this! 💔😭",
-    "You're really testing me! 😩",
-    "I'll give you chocolates! 🍫",
-    "And flowers too! 💐",
-    "I'll cook for you! 👨‍🍳",
-    "Okay now you're being mean! 😤",
-    "Fine, I'll just cry here... 😭",
-    "Still no?! 🤯",
-    "What if I say please x100? 🥺🙏",
-    "I'll never give up! 💪❤️",
-    "Last chance... just kidding! 😏"
+    "Really? 😢",
+    "Think again! 💭",
+    "Please? 🙏",
+    "I'll be sad 😭",
+    "Don't do this! 💔",
+    "Pretty please? 🥹",
+    "I'll cry! 😿",
+    "Reconsider? 💕",
+    "Just say yes! 😍",
+    "C'mon! 🌹",
+    "I'll wait... ⏳",
+    "Forever? 💗",
+    "One chance? 🎀",
+    "I love you! 💖",
+    "Say yes! 💝",
+    "Please!! 😩",
+    "Yes? 👉👈",
+    "Okay fine... 😔"
 ];
 
 let noClickCount = 0;
@@ -45,12 +44,10 @@ let yesButtonScale = 1;
 function createFloatingHearts() {
     const hearts = ['💖', '💕', '💗', '💓', '💞', '💝', '🩷', '❤️'];
     
-    // Create initial batch of hearts
     for (let i = 0; i < 15; i++) {
         setTimeout(() => createHeart(hearts), i * 500);
     }
     
-    // Continue creating hearts
     setInterval(() => createHeart(hearts), 2000);
 }
 
@@ -59,7 +56,6 @@ function createHeart(hearts) {
     heart.className = 'floating-heart';
     heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
     
-    // Random position and properties
     heart.style.left = Math.random() * 100 + '%';
     heart.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
     heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
@@ -68,7 +64,6 @@ function createHeart(hearts) {
     
     heartsContainer.appendChild(heart);
     
-    // Remove heart after animation
     setTimeout(() => heart.remove(), 25000);
 }
 
@@ -76,24 +71,22 @@ function createHeart(hearts) {
 // Button Event Handlers
 // ============================================
 function handleYesClick() {
-    // Hide question card with animation
     questionCard.style.animation = 'cardExit 0.5s ease forwards';
+    
+    // Hide the No button too
+    noBtn.style.display = 'none';
     
     setTimeout(() => {
         questionCard.classList.add('hidden');
         successCard.classList.remove('hidden');
         
-        // Show the big heart popup
         showHeartPopup();
-        
-        // Celebration effects!
         launchConfetti();
         createHeartBurst();
     }, 500);
 }
 
 function showHeartPopup() {
-    // Create heart popup overlay
     const overlay = document.createElement('div');
     overlay.className = 'heart-popup-overlay';
     
@@ -108,7 +101,6 @@ function showHeartPopup() {
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
     
-    // Auto-remove after animation
     setTimeout(() => {
         overlay.classList.add('fade-out');
         setTimeout(() => overlay.remove(), 500);
@@ -118,68 +110,73 @@ function showHeartPopup() {
 function handleNoClick() {
     noClickCount++;
     
-    // Show message in bubble - cycle through messages infinitely
-    const messageIndex = (noClickCount - 1) % noMessages.length;
-    const message = noMessages[messageIndex];
+    // Change the text on the No button itself
+    const messageIndex = noClickCount % noButtonMessages.length;
+    noBtn.innerHTML = `<span class="btn-text">${noButtonMessages[messageIndex]}</span>`;
     
-    // Update subtitle with bubble animation
-    subtitle.textContent = message;
-    subtitle.classList.remove('message-bubble');
-    subtitle.offsetHeight; // Trigger reflow
-    subtitle.classList.add('message-bubble');
-    
-    // Make No button jump to random position!
+    // Make the No button jump to a new position
     jumpNoButton();
     
-    // Grow the Yes button (cap at 1.8x)
-    yesButtonScale = Math.min(yesButtonScale + 0.05, 1.8);
+    // Make the Yes button BIGGER with each click!
+    yesButtonScale += 0.15;
     yesBtn.style.transform = `scale(${yesButtonScale})`;
     
-    // After many clicks, make Yes button irresistible
-    if (noClickCount >= 5) {
-        yesBtn.style.boxShadow = '0 0 30px rgba(236, 72, 153, 0.8)';
-        yesBtn.classList.add('mega-pulse');
+    // Add glow effect after a few clicks
+    if (noClickCount >= 3) {
+        yesBtn.style.boxShadow = `0 0 ${20 + noClickCount * 5}px rgba(236, 72, 153, 0.8)`;
     }
     
-    // No button stays visible forever - just keeps jumping!
+    // Update subtitle with encouragement
+    const subtitles = [
+        "I have something special to ask you...",
+        "Come on, you know you want to! 😏",
+        "The Yes button is looking prettier! 💕",
+        "Just one little click on Yes! ✨",
+        "I promise it'll be worth it! 🌹",
+        "You're making me work for it! 😅",
+        "The Yes button is growing... 👀",
+        "Almost there, just click Yes! 💖"
+    ];
+    subtitle.textContent = subtitles[Math.min(noClickCount, subtitles.length - 1)];
 }
 
 function jumpNoButton() {
-    // Define safe positions around the screen (in percentages)
-    const safePositions = [
-        { left: '10%', top: '10%' },
-        { left: '80%', top: '10%' },
-        { left: '10%', top: '80%' },
-        { left: '80%', top: '80%' },
-        { left: '5%', top: '50%' },
-        { left: '85%', top: '50%' },
-        { left: '50%', top: '5%' },
+    // Array of positions around the viewport (staying away from center)
+    const positions = [
+        { left: '15%', top: '15%' },
+        { left: '85%', top: '15%' },
+        { left: '15%', top: '85%' },
+        { left: '85%', top: '85%' },
+        { left: '10%', top: '50%' },
+        { left: '90%', top: '50%' },
+        { left: '50%', top: '10%' },
         { left: '50%', top: '90%' },
-        { left: '20%', top: '20%' },
-        { left: '70%', top: '20%' },
-        { left: '20%', top: '70%' },
-        { left: '70%', top: '70%' },
-        { left: '15%', top: '40%' },
-        { left: '75%', top: '40%' },
-        { left: '40%', top: '15%' },
-        { left: '40%', top: '85%' },
+        { left: '25%', top: '25%' },
+        { left: '75%', top: '25%' },
+        { left: '25%', top: '75%' },
+        { left: '75%', top: '75%' },
+        { left: '20%', top: '40%' },
+        { left: '80%', top: '40%' },
+        { left: '20%', top: '60%' },
+        { left: '80%', top: '60%' },
     ];
     
-    // Pick a random position
-    const pos = safePositions[Math.floor(Math.random() * safePositions.length)];
+    // Pick random position
+    const pos = positions[Math.floor(Math.random() * positions.length)];
     
-    // Apply the jump with fixed positioning
+    // Apply position with fixed positioning
     noBtn.style.position = 'fixed';
     noBtn.style.left = pos.left;
     noBtn.style.top = pos.top;
     noBtn.style.transform = 'translate(-50%, -50%)';
     noBtn.style.zIndex = '9999';
-    noBtn.style.transition = 'left 0.3s ease, top 0.3s ease';
-    noBtn.style.margin = '0';
+    noBtn.style.transition = 'left 0.25s ease-out, top 0.25s ease-out';
+    noBtn.style.pointerEvents = 'auto';
     
-    // Add a little shake animation
-    noBtn.classList.add('jumped');
-    setTimeout(() => noBtn.classList.remove('jumped'), 300);
+    // Quick shake animation
+    noBtn.style.animation = 'none';
+    noBtn.offsetHeight; // Reflow
+    noBtn.style.animation = 'buttonShake 0.3s ease';
 }
 
 // ============================================
@@ -249,31 +246,10 @@ dynamicStyles.textContent = `
         }
     }
     
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20% { transform: translateX(-10px); }
-        40% { transform: translateX(10px); }
-        60% { transform: translateX(-10px); }
-        80% { transform: translateX(10px); }
-    }
-    
-    .mega-pulse {
-        animation: megaPulse 0.5s ease infinite !important;
-    }
-    
-    @keyframes megaPulse {
-        0%, 100% { transform: scale(${yesButtonScale}); }
-        50% { transform: scale(${yesButtonScale * 1.1}); }
-    }
-    
-    .jumped {
-        animation: jumpShake 0.3s ease !important;
-    }
-    
-    @keyframes jumpShake {
-        0%, 100% { transform: rotate(0deg); }
-        25% { transform: rotate(-10deg); }
-        75% { transform: rotate(10deg); }
+    @keyframes buttonShake {
+        0%, 100% { rotate: 0deg; }
+        25% { rotate: -10deg; }
+        75% { rotate: 10deg; }
     }
 `;
 document.head.appendChild(dynamicStyles);
@@ -282,38 +258,29 @@ document.head.appendChild(dynamicStyles);
 // Event Listeners & Initialization
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize floating hearts
     createFloatingHearts();
     
-    // Button click handlers
     yesBtn.addEventListener('click', handleYesClick);
     noBtn.addEventListener('click', handleNoClick);
     
-    // Add hover sound effect simulation (visual feedback)
+    // Make Yes button glow on hover
     yesBtn.addEventListener('mouseenter', () => {
-        yesBtn.style.filter = 'brightness(1.1)';
+        yesBtn.style.filter = 'brightness(1.15)';
     });
     
     yesBtn.addEventListener('mouseleave', () => {
         yesBtn.style.filter = 'brightness(1)';
     });
     
-    // Make No button run away on hover too!
-    noBtn.addEventListener('mouseenter', () => {
-        if (noClickCount >= 3) {
-            jumpNoButton();
-        }
-    });
-    
-    // Prevent right-click on No button (playful)
+    // Easter egg: right-click No button
     noBtn.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        subtitle.textContent = "Nice try! Just click Yes already! 😏💕";
-        subtitle.classList.add('message-bubble');
+        noBtn.innerHTML = '<span class="btn-text">Nice try! 😏</span>';
+        jumpNoButton();
     });
 });
 
-// Easter egg: Konami code reveals extra message
+// Konami code easter egg
 let konamiCode = [];
 const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
@@ -322,8 +289,7 @@ document.addEventListener('keydown', (e) => {
     konamiCode = konamiCode.slice(-10);
     
     if (konamiCode.join(',') === konamiSequence.join(',')) {
-        subtitle.textContent = "🎮 You found the secret! But still... be my Valentine? 💕";
-        subtitle.classList.add('message-bubble');
+        subtitle.textContent = "🎮 Secret found! But still... be my Valentine? 💕";
         launchConfetti();
     }
 });
