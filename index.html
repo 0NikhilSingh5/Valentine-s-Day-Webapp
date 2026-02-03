@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <meta name="description" content="A special Valentine's Day question just for you. Will you be my Valentine?">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="hearts-container" id="heartsContainer"></div>
+    
+    <!-- Main Content -->
+    <main class="main-container" id="mainContainer">
+        <!-- Question Card -->
+        <div class="card" id="questionCard">
+            <div class="card-glow"></div>
+            <div class="card-content">
+                <div class="hearts-decoration">
+                    <span class="heart-icon">💖</span>
+                    <span class="heart-icon">💕</span>
+                    <span class="heart-icon">💖</span>
+                </div>
+                
+                <h1 class="title">Will You Be My Valentine?</h1>
+                
+                <div class="cute-bear">
+                    <img src="https://em-content.zobj.net/source/apple/391/teddy-bear_1f9f8.png" alt="Cute Bear" class="bear-img">
+                </div>
+                
+                <p class="subtitle" id="subtitle">I have something special to ask you...</p>
+                
+                <div class="buttons-container" id="buttonsContainer">
+                    <button class="btn btn-yes" id="yesBtn">
+                        <span class="btn-text">Yes! 💖</span>
+                        <span class="btn-sparkle">✨</span>
+                    </button>
+                    <button class="btn btn-no" id="noBtn">
+                        <span class="btn-text">No 😅</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Card (Hidden Initially) -->
+        <div class="card success-card hidden" id="successCard">
+            <div class="card-glow success-glow"></div>
+            <div class="card-content">
+                <div class="success-hearts">
+                    <span>💖</span><span>💕</span><span>💗</span><span>💓</span><span>💖</span>
+                </div>
+                
+                <h1 class="success-title">Yay! 🎉</h1>
+                
+                <div class="success-emoji">🥰</div>
+                
+                <p class="success-message">
+                    You just made me the happiest person! 
+                    <br>
+                    <span class="highlight">I love you! 💕</span>
+                </p>
+                
+                <div class="success-animation">
+                    <div class="heart-burst"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
