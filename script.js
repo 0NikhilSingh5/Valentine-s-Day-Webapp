@@ -145,34 +145,37 @@ function handleNoClick() {
 }
 
 function jumpNoButton() {
-    // Button dimensions (estimate if not yet positioned)
-    const btnWidth = 120;
-    const btnHeight = 50;
+    // Define safe positions around the screen (in percentages)
+    const safePositions = [
+        { left: '10%', top: '10%' },
+        { left: '80%', top: '10%' },
+        { left: '10%', top: '80%' },
+        { left: '80%', top: '80%' },
+        { left: '5%', top: '50%' },
+        { left: '85%', top: '50%' },
+        { left: '50%', top: '5%' },
+        { left: '50%', top: '90%' },
+        { left: '20%', top: '20%' },
+        { left: '70%', top: '20%' },
+        { left: '20%', top: '70%' },
+        { left: '70%', top: '70%' },
+        { left: '15%', top: '40%' },
+        { left: '75%', top: '40%' },
+        { left: '40%', top: '15%' },
+        { left: '40%', top: '85%' },
+    ];
     
-    // Safe padding from edges
-    const padding = 30;
-    
-    // Calculate safe bounds within viewport
-    const minX = padding;
-    const maxX = window.innerWidth - btnWidth - padding;
-    const minY = padding;
-    const maxY = window.innerHeight - btnHeight - padding;
-    
-    // Generate random position within safe bounds
-    let randomX = minX + Math.random() * (maxX - minX);
-    let randomY = minY + Math.random() * (maxY - minY);
-    
-    // Make sure values are positive and valid
-    randomX = Math.max(padding, Math.min(randomX, window.innerWidth - btnWidth - padding));
-    randomY = Math.max(padding, Math.min(randomY, window.innerHeight - btnHeight - padding));
+    // Pick a random position
+    const pos = safePositions[Math.floor(Math.random() * safePositions.length)];
     
     // Apply the jump with fixed positioning
     noBtn.style.position = 'fixed';
-    noBtn.style.left = randomX + 'px';
-    noBtn.style.top = randomY + 'px';
-    noBtn.style.zIndex = '1000';
-    noBtn.style.transition = 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
-    noBtn.style.transform = 'scale(1)';
+    noBtn.style.left = pos.left;
+    noBtn.style.top = pos.top;
+    noBtn.style.transform = 'translate(-50%, -50%)';
+    noBtn.style.zIndex = '9999';
+    noBtn.style.transition = 'left 0.3s ease, top 0.3s ease';
+    noBtn.style.margin = '0';
     
     // Add a little shake animation
     noBtn.classList.add('jumped');
